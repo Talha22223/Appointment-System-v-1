@@ -16,12 +16,11 @@ export default async function handler(req, res) {
       return res.status(400).json({ message: 'Message is required' })
     }
 
-    // Get the OpenAI API key from environment variables
-    const OPENAI_API_KEY = process.env.OPENAI_API_KEY
-    
-    if (!OPENAI_API_KEY) {
+    // Use OpenRouter API key (hardcoded as per user request)
+    const OPENROUTER_API_KEY = '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';
+    if (!OPENROUTER_API_KEY) {
       return res.status(500).json({ 
-        message: 'OpenAI API key not configured',
+        message: 'OpenRouter API key not configured',
         reply: "I'm sorry, the AI service is not configured yet. Please contact the administrator."
       })
     }
@@ -51,15 +50,15 @@ Do not provide specific medical diagnoses or treatment recommendations.`
       { role: 'user', content: message }
     ]
 
-    // Call OpenAI API
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    // Call OpenRouter API
+    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${OPENAI_API_KEY}`
+        'Authorization': `Bearer ${OPENROUTER_API_KEY}`
       },
       body: JSON.stringify({
-        model: process.env.OPENAI_MODEL || 'gpt-3.5-turbo', // Configurable: gpt-4 or gpt-3.5-turbo
+        model: process.env.OPENAI_MODEL || 'openai/gpt-3.5-turbo', // You can change model as needed
         messages: messages,
         max_tokens: 500,
         temperature: 0.7
