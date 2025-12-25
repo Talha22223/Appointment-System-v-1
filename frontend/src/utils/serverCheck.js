@@ -7,7 +7,7 @@ import axios from 'axios';
 export const checkServerStatus = async () => {
   try {
     // Try to reach the health endpoint or any public endpoint
-    const apiUrl = import.meta.env.VITE_API_URL || import.meta.env.NEXT_PUBLIC_API_BASE_URL || 'http://127.0.0.1:3001/api';
+    const apiUrl = import.meta.env.VITE_API_URL || import.meta.env.NEXT_PUBLIC_API_BASE_URL || 'https://appointment-backend-fwy2.onrender.com/api';
     const response = await axios.get(apiUrl.replace(/\/api$/, '') + '/health', {
       timeout: 3000 // 3 second timeout
     });

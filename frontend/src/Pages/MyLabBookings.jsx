@@ -35,11 +35,11 @@ const MyLabBookings = ({ adminMode = false }) => {
             
             console.log('MyLabBookings - isAdmin:', isAdmin, 'adminMode:', adminMode);
             
-            let endpoint = 'http://127.0.0.1:3001/api/lab-bookings/patient';
+            let endpoint = 'https://appointment-backend-fwy2.onrender.com/api/lab-bookings/patient';
             
             // Only use admin endpoint if explicitly in admin mode, not just if user is admin
             if (adminMode) {
-                endpoint = 'http://127.0.0.1:3001/api/lab-bookings/all';
+                endpoint = 'https://appointment-backend-fwy2.onrender.com/api/lab-bookings/all';
                 console.log('Using admin endpoint for lab bookings');
             } else {
                 console.log('Using patient endpoint for lab bookings');
@@ -117,7 +117,7 @@ const MyLabBookings = ({ adminMode = false }) => {
                 return;
             }
             
-            await axios.put(`http://127.0.0.1:3001/api/lab-bookings/${bookingId}/cancel`, {}, {
+            await axios.put(`https://appointment-backend-fwy2.onrender.com/api/lab-bookings/${bookingId}/cancel`, {}, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -140,7 +140,7 @@ const MyLabBookings = ({ adminMode = false }) => {
                 return;
             }
             
-            await axios.put(`http://localhost:3001/api/lab-bookings/${bookingId}/status`, 
+            await axios.put(`https://appointment-backend-fwy2.onrender.com/api/lab-bookings/${bookingId}/status`, 
                 { status: 'confirmed' }, {
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -168,7 +168,7 @@ const MyLabBookings = ({ adminMode = false }) => {
                 return;
             }
             
-            await axios.put(`http://127.0.0.1:3001/api/lab-bookings/${bookingId}/status`, 
+            await axios.put(`https://appointment-backend-fwy2.onrender.com/api/lab-bookings/${bookingId}/status`, 
                 { status: 'rejected' }, {
                 headers: {
                     Authorization: `Bearer ${token}`

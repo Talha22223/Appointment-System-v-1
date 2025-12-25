@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { assets } from '../assets/assets_frontend/assets';
 import { AuthContext } from '../Context/AuthContext.jsx';
-const API_URL = import.meta.env.VITE_API_URL || import.meta.env.NEXT_PUBLIC_API_BASE_URL || 'http://127.0.0.1:3001/api';
+const API_URL = import.meta.env.VITE_API_URL || import.meta.env.NEXT_PUBLIC_API_BASE_URL || 'https://appointment-backend-fwy2.onrender.com/api';
 const MyAppointments = ({ adminMode = false }) => {
   const { currentUser, isAdmin } = useContext(AuthContext);
   const [appointments, setAppointments] = useState([]);

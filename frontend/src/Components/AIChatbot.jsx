@@ -45,7 +45,7 @@ const AIChatbot = () => {
                     content: msg.content
                 }));
 
-            const response = await axios.post('http://127.0.0.1:3001/api/chatbot', {
+            const response = await axios.post('https://appointment-backend-fwy2.onrender.com/api/chatbot', {
                 message: inputMessage,
                 conversationHistory
             });
