@@ -41,7 +41,7 @@ const MyLabBookings = ({ adminMode = false }) => {
             
             // Only use admin endpoint if explicitly in admin mode, not just if user is admin
             if (adminMode) {
-                endpoint = `${API_URL}/lab-bookings/all`;
+                endpoint = `${API_URL}/lab-bookings`;
                 console.log('Using admin endpoint for lab bookings');
             } else {
                 console.log('Using patient endpoint for lab bookings');
