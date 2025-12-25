@@ -25,11 +25,13 @@ const MyAppointments = ({ adminMode = false }) => {
     try {
       const token = localStorage.getItem('token');
       if (!token) return;
-      
       const response = await axios.get(`${API_URL}/doctors`, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        timeout: 10000,
       });
-      
       if (response.data && Array.isArray(response.data)) {
         const cache = {};
         response.data.forEach(doctor => {
@@ -44,6 +46,13 @@ const MyAppointments = ({ adminMode = false }) => {
         setDoctorCache(cache);
       }
     } catch (err) {
+      if (err.response) {
+        setError(err.response.data?.message || `Failed to load doctors: ${err.response.status}`);
+      } else if (err.request) {
+        setError('No response from server. Please check your network connection.');
+      } else {
+        setError('Error: ' + err.message);
+      }
       console.error('Error fetching doctors:', err);
     }
   };
@@ -71,34 +80,24 @@ const MyAppointments = ({ adminMode = false }) => {
     try {
       const token = localStorage.getItem('token');
       if (!token) {
+        setError('You must be logged in to view appointments.');
         navigate('/login');
         return;
       }
-      
-      console.log('MyAppointments - isAdmin:', isAdmin, 'adminMode:', adminMode);
-      
       let endpoint = `${API_URL}/appointments/patient`;
-      
-      // Only use admin endpoint if explicitly in admin mode, not just if user is admin
       if (adminMode) {
         endpoint = `${API_URL}/appointments/all`;
-        console.log('Using admin endpoint for appointments');
-      } else {
-        console.log('Using patient endpoint for appointments');
       }
-      
       const response = await axios.get(endpoint, {
         headers: {
-          Authorization: `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        timeout: 10000,
       });
-      
-      console.log('Raw appointments data:', response.data);
-      
       if (response.data && Array.isArray(response.data)) {
         // Update doctor cache with any doctor data from appointments
         const newDoctorCache = {...doctorCache};
-        
         response.data.forEach(appointment => {
           if (appointment.doctor && typeof appointment.doctor === 'object' && appointment.doctor._id) {
             const doctorId = appointment.doctor._id;
@@ -111,12 +110,9 @@ const MyAppointments = ({ adminMode = false }) => {
             }
           }
         });
-        
-        // Update doctor cache if new doctors were found
         if (Object.keys(newDoctorCache).length > Object.keys(doctorCache).length) {
           setDoctorCache(newDoctorCache);
         }
-        
         // Process appointments with doctor data
         const sanitizedAppointments = response.data.map(appointment => {
           // Prepare doctor data
@@ -181,21 +177,27 @@ const MyAppointments = ({ adminMode = false }) => {
     try {
       const token = localStorage.getItem('token');
       if (!token) {
+        alert('You must be logged in to cancel appointments.');
         navigate('/login');
         return;
       }
-      
       await axios.put(`${API_URL}/appointments/${appointmentId}/cancel`, {}, {
         headers: {
-          Authorization: `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        timeout: 10000,
       });
-      
-      // Refresh the appointments list
       fetchAppointments();
     } catch (err) {
+      if (err.response) {
+        alert(err.response.data?.message || `Failed to cancel appointment: ${err.response.status}`);
+      } else if (err.request) {
+        alert('No response from server. Please check your network connection.');
+      } else {
+        alert('Error: ' + err.message);
+      }
       console.error('Error cancelling appointment:', err);
-      alert('Failed to cancel appointment. Please try again.');
     }
   };
 
@@ -204,22 +206,27 @@ const MyAppointments = ({ adminMode = false }) => {
     try {
       const token = localStorage.getItem('token');
       if (!token) {
+        alert('You must be logged in to accept appointments.');
         navigate('/login');
         return;
       }
-      
-      await axios.put(`${API_URL}/appointments/${appointmentId}/status`, 
-        { status: 'confirmed' }, {
+      await axios.put(`${API_URL}/appointments/${appointmentId}/status`, { status: 'confirmed' }, {
         headers: {
-          Authorization: `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        timeout: 10000,
       });
-      
-      // Refresh the appointments list
       fetchAppointments();
     } catch (err) {
+      if (err.response) {
+        alert(err.response.data?.message || `Failed to accept appointment: ${err.response.status}`);
+      } else if (err.request) {
+        alert('No response from server. Please check your network connection.');
+      } else {
+        alert('Error: ' + err.message);
+      }
       console.error('Error accepting appointment:', err);
-      alert('Failed to accept appointment. Please try again.');
     }
   };
 
@@ -228,26 +235,30 @@ const MyAppointments = ({ adminMode = false }) => {
     if (!window.confirm('Are you sure you want to reject this appointment?')) {
       return;
     }
-    
     try {
       const token = localStorage.getItem('token');
       if (!token) {
+        alert('You must be logged in to reject appointments.');
         navigate('/login');
         return;
       }
-      
-      await axios.put(`${API_URL}/appointments/${appointmentId}/status`, 
-        { status: 'rejected' }, {
+      await axios.put(`${API_URL}/appointments/${appointmentId}/status`, { status: 'rejected' }, {
         headers: {
-          Authorization: `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        timeout: 10000,
       });
-      
-      // Refresh the appointments list
       fetchAppointments();
     } catch (err) {
+      if (err.response) {
+        alert(err.response.data?.message || `Failed to reject appointment: ${err.response.status}`);
+      } else if (err.request) {
+        alert('No response from server. Please check your network connection.');
+      } else {
+        alert('Error: ' + err.message);
+      }
       console.error('Error rejecting appointment:', err);
-      alert('Failed to reject appointment. Please try again.');
     }
   };
   

@@ -23,26 +23,23 @@ const MyPharmacistAppointments = () => {
   const fetchAppointments = async () => {
     setLoading(true);
     setError('');
-    
     try {
       const token = localStorage.getItem('token');
       if (!token) {
+        setError('You must be logged in to view appointments.');
         navigate('/login');
         return;
       }
-      
       const response = await axios.get(`${API_URL}/pharmacist-appointments/patient`, {
         headers: {
-          Authorization: `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        timeout: 10000,
       });
-      
-      console.log('Pharmacist appointments data:', response.data);
-      
       if (response.data && Array.isArray(response.data)) {
         const sanitizedAppointments = response.data.map(appointment => {
           let pharmacistData;
-          
           if (appointment.pharmacist && typeof appointment.pharmacist === 'object' && appointment.pharmacist.name) {
             pharmacistData = {
               ...appointment.pharmacist,
@@ -63,7 +60,6 @@ const MyPharmacistAppointments = () => {
               image: defaultPharmacistImage
             };
           }
-          
           return {
             ...appointment,
             pharmacist: pharmacistData,
@@ -71,17 +67,21 @@ const MyPharmacistAppointments = () => {
             appointmentDate: appointment.appointmentDate || new Date().toISOString()
           };
         });
-        
         setAppointments(sanitizedAppointments);
+      } else {
+        setError('No appointments found.');
       }
     } catch (err) {
-      console.error('Error fetching pharmacist appointments:', err);
-      if (err.response?.status === 401) {
-        setError('Please log in to view your appointments');
-        navigate('/login');
+      if (err.response) {
+        // Server responded with a status outside 2xx
+        setError(err.response.data?.message || `Failed to load appointments: ${err.response.status}`);
+        if (err.response.status === 401) navigate('/login');
+      } else if (err.request) {
+        setError('No response from server. Please check your network connection.');
       } else {
-        setError('Failed to load appointments. Please try again.');
+        setError('Error: ' + err.message);
       }
+      console.error('Error fetching pharmacist appointments:', err);
     } finally {
       setLoading(false);
     }
@@ -91,23 +91,34 @@ const MyPharmacistAppointments = () => {
     if (!window.confirm('Are you sure you want to cancel this appointment?')) {
       return;
     }
-    
     try {
       const token = localStorage.getItem('token');
+      if (!token) {
+        alert('You must be logged in to cancel appointments.');
+        navigate('/login');
+        return;
+      }
       await axios.patch(
         `${API_URL}/pharmacist-appointments/${appointmentId}/cancel`,
         {},
         {
           headers: {
-            Authorization: `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          timeout: 10000,
         }
       );
-      
       fetchAppointments();
     } catch (err) {
+      if (err.response) {
+        alert(err.response.data?.message || `Failed to cancel appointment: ${err.response.status}`);
+      } else if (err.request) {
+        alert('No response from server. Please check your network connection.');
+      } else {
+        alert('Error: ' + err.message);
+      }
       console.error('Error cancelling appointment:', err);
-      alert('Failed to cancel appointment. Please try again.');
     }
   };
   
