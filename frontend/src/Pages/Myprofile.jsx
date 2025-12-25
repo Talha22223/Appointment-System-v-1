@@ -30,6 +30,7 @@ const Myprofile = ({ initialTab = 'profile' }) => {
     const [isAdmin, setIsAdmin] = useState(false);
     const [activeTab, setActiveTab] = useState(initialTab);
     const [doctors, setDoctors] = useState([]);
+    const [labTechniques, setLabTechniques] = useState([]);
     const [appointments, setAppointments] = useState([]);
     const [filteredAppointments, setFilteredAppointments] = useState([]);
     const [appointmentFilter, setAppointmentFilter] = useState('all');
@@ -58,6 +59,21 @@ const Myprofile = ({ initialTab = 'profile' }) => {
         available: true
     });
     const [addingDoctor, setAddingDoctor] = useState(false);
+    
+    // Lab technique form state
+    const [showLabTechniqueForm, setShowLabTechniqueForm] = useState(false);
+    const [labTechniqueForm, setLabTechniqueForm] = useState({
+        name: '',
+        description: '',
+        category: '',
+        duration: '',
+        price: '',
+        image: '',
+        requirements: '',
+        preparation: '',
+        available: true
+    });
+    const [addingLabTechnique, setAddingLabTechnique] = useState(false);
     
     // API base URL
     const API_URL = 'http://127.0.0.1:3001/api'; 
@@ -152,6 +168,16 @@ const Myprofile = ({ initialTab = 'profile' }) => {
                 const doctorsData = Array.isArray(doctorsResponse.data) ? doctorsResponse.data : doctorsResponse.data.doctors || [];
                 setDoctors(doctorsData);
                 setStats(prev => ({...prev, totalDoctors: doctorsData.length}));
+            }
+            
+            // Fetch lab techniques - using correct endpoint
+            const labTechniquesResponse = await axios.get(`${API_URL}/lab-techniques`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            
+            if (labTechniquesResponse.data) {
+                const labTechniquesData = Array.isArray(labTechniquesResponse.data) ? labTechniquesResponse.data : [];
+                setLabTechniques(labTechniquesData);
             }
             
             // Fetch all appointments for admin - using correct endpoint
@@ -320,6 +346,109 @@ const Myprofile = ({ initialTab = 'profile' }) => {
         }
     };
     
+    // Handle lab technique form input changes
+    const handleLabTechniqueFormChange = (e) => {
+        const { name, value, type, checked } = e.target;
+        setLabTechniqueForm(prev => ({
+            ...prev,
+            [name]: type === 'checkbox' ? checked : value
+        }));
+    };
+    
+    // Function to add a new lab technique
+    const handleAddLabTechnique = async (e) => {
+        e.preventDefault();
+        setAddingLabTechnique(true);
+        setError('');
+        setSuccessMessage('');
+        
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+            
+            const response = await axios.post(`${API_URL}/lab-techniques`, 
+                labTechniqueForm,
+                { headers: { Authorization: `Bearer ${token}` }}
+            );
+            
+            if (response.data) {
+                fetchAdminData();
+                setSuccessMessage('Lab technique added successfully');
+                setShowLabTechniqueForm(false);
+                
+                // Reset form
+                setLabTechniqueForm({
+                    name: '',
+                    description: '',
+                    category: '',
+                    duration: '',
+                    price: '',
+                    image: '',
+                    requirements: '',
+                    preparation: '',
+                    available: true
+                });
+                
+                setTimeout(() => setSuccessMessage(''), 3000);
+            }
+            
+        } catch (error) {
+            console.error('Error adding new lab technique:', error);
+            const errorMsg = error.response?.data?.message || 'Failed to add lab technique';
+            setError(errorMsg);
+            setTimeout(() => setError(''), 3000);
+        } finally {
+            setAddingLabTechnique(false);
+        }
+    };
+    
+    // Toggle lab technique availability
+    const toggleLabTechniqueAvailability = async (labTechniqueId, currentStatus) => {
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+            
+            await axios.put(`${API_URL}/lab-techniques/${labTechniqueId}`, 
+                { available: !currentStatus },
+                { headers: { Authorization: `Bearer ${token}` }}
+            );
+            
+            fetchAdminData();
+            setSuccessMessage(`Lab technique status updated successfully`);
+            setTimeout(() => setSuccessMessage(''), 3000);
+            
+        } catch (error) {
+            console.error('Error updating lab technique status:', error);
+            setError('Failed to update lab technique status');
+            setTimeout(() => setError(''), 3000);
+        }
+    };
+    
+    // Delete lab technique
+    const handleDeleteLabTechnique = async (labTechniqueId) => {
+        if (!window.confirm('Are you sure you want to delete this lab technique?')) {
+            return;
+        }
+        
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+            
+            await axios.delete(`${API_URL}/lab-techniques/${labTechniqueId}`, 
+                { headers: { Authorization: `Bearer ${token}` }}
+            );
+            
+            fetchAdminData();
+            setSuccessMessage('Lab technique deleted successfully');
+            setTimeout(() => setSuccessMessage(''), 3000);
+            
+        } catch (error) {
+            console.error('Error deleting lab technique:', error);
+            setError('Failed to delete lab technique');
+            setTimeout(() => setError(''), 3000);
+        }
+    };
+    
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         
@@ -481,6 +610,12 @@ const Myprofile = ({ initialTab = 'profile' }) => {
                             className={`px-6 py-3 font-medium ${activeTab === 'doctors' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-600 hover:text-blue-600'}`}
                         >
                             Manage Doctors
+                        </button>
+                        <button 
+                            onClick={() => setActiveTab('lab-techniques')}
+                            className={`px-6 py-3 font-medium ${activeTab === 'lab-techniques' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-600 hover:text-blue-600'}`}
+                        >
+                            Manage Lab Tests
                         </button>
                         <button 
                             onClick={() => setActiveTab('profile')}

@@ -16,7 +16,7 @@ const Doctors = () => {
     const navigate = useNavigate();
     const { doctors: contextDoctors } = useContext(AppContext);
     
-    const API_URL = 'http://127.0.0.1:3001/api';
+    const API_URL = import.meta.env.NEXT_PUBLIC_API_BASE_URL || 'http://127.0.0.1:3001/api';
     
     const specialities = [
         'All', 
