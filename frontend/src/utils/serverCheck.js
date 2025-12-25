@@ -24,6 +24,6 @@ export const checkServerStatus = async () => {
  */
 export const showServerOfflineMessage = () => {
   alert(
-    'Cannot connect to the server. Please ensure the backend server is running at http://localhost:5000'
+    'Cannot connect to the server. Please ensure the backend server is running.'
   );
 };

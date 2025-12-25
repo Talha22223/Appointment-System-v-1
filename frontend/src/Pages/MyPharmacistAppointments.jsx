@@ -14,7 +14,7 @@ const MyPharmacistAppointments = () => {
   const defaultPharmacistImage = assets.profile_pic;
   const [filter, setFilter] = useState('all');
   
-  const API_URL = 'https://appointment-backend-fwy2.onrender.com/api';
+  const API_URL = import.meta.env.VITE_API_URL || 'https://appointment-backend-fwy2.onrender.com/api';
   
   useEffect(() => {
     fetchAppointments();
@@ -35,7 +35,7 @@ const MyPharmacistAppointments = () => {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
-        timeout: 10000,
+        timeout: 30000,
       });
       if (response.data && Array.isArray(response.data)) {
         const sanitizedAppointments = response.data.map(appointment => {
@@ -106,7 +106,7 @@ const MyPharmacistAppointments = () => {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
           },
-          timeout: 10000,
+          timeout: 30000,
         }
       );
       fetchAppointments();

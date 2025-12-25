@@ -45,13 +45,22 @@ export const corsConfig = {
       process.env.FRONTEND_URL,
     ].filter(Boolean);
 
-    if (!origin || allowedOrigins.includes(origin) || process.env.NODE_ENV !== 'production') {
+    // Allow requests with no origin (like mobile apps, curl, Postman)
+    if (!origin) {
+      callback(null, true);
+      return;
+    }
+
+    if (allowedOrigins.includes(origin) || process.env.NODE_ENV !== 'production') {
       callback(null, true);
     } else {
+      console.warn(`CORS: Origin ${origin} not allowed`);
       callback(new Error('Not allowed by CORS'), false);
     }
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+  exposedHeaders: ['Authorization'],
+  maxAge: 86400, // 24 hours
 };

@@ -8,7 +8,7 @@ const TopPharmacists = () => {
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
     
-    const API_URL = 'https://appointment-backend-fwy2.onrender.com/api';
+    const API_URL = import.meta.env.VITE_API_URL || 'https://appointment-backend-fwy2.onrender.com/api';
     
     useEffect(() => {
         fetchPharmacists();

@@ -5,6 +5,7 @@ const API_URL = import.meta.env.VITE_API_URL || import.meta.env.NEXT_PUBLIC_API_
 // Create axios instance
 const api = axios.create({
   baseURL: API_URL,
+  timeout: 30000, // 30 second timeout for Render.com cold starts
   headers: {
     'Content-Type': 'application/json',
   }
@@ -20,6 +21,20 @@ api.interceptors.request.use(
     return config;
   },
   (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// Add response interceptor for better error handling
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      // Unauthorized - clear token and redirect to login
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.location.href = '/login';
+    }
     return Promise.reject(error);
   }
 );

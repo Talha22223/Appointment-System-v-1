@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { assets } from '../assets/assets_frontend/assets';
 import axios from 'axios';
 
+const API_URL = import.meta.env.VITE_API_URL || 'https://appointment-backend-fwy2.onrender.com/api';
+
 const AIChatbot = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState([]);
@@ -45,7 +47,7 @@ const AIChatbot = () => {
                     content: msg.content
                 }));
 
-            const response = await axios.post('https://appointment-backend-fwy2.onrender.com/api/chatbot', {
+            const response = await axios.post(`${API_URL}/chatbot`, {
                 message: inputMessage,
                 conversationHistory
             });

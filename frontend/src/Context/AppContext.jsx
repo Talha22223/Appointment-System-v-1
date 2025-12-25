@@ -61,7 +61,7 @@ const AppContextProvider = ( props ) => {
     const [doctorsList, setDoctors] = useState(doctors);
     const [labTechniquesList, setLabTechniques] = useState(sampleLabTechniques);
     
-    const API_URL = 'https://appointment-backend-fwy2.onrender.com/api';
+    const API_URL = import.meta.env.VITE_API_URL || 'https://appointment-backend-fwy2.onrender.com/api';
 
     // Function to refresh doctors data and merge with existing
     const refreshDoctors = async () => {

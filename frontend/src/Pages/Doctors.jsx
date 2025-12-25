@@ -16,7 +16,7 @@ const Doctors = () => {
     const navigate = useNavigate();
     const { doctors: contextDoctors } = useContext(AppContext);
     
-    const API_URL = import.meta.env.NEXT_PUBLIC_API_BASE_URL || 'https://appointment-backend-fwy2.onrender.com/api';
+    const API_URL = import.meta.env.VITE_API_URL || 'https://appointment-backend-fwy2.onrender.com/api';
     
     const specialities = [
         'All', 
