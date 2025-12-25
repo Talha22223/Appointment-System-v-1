@@ -63,7 +63,7 @@ const Login = () => {
           // Registration process with better debugging
           console.log('Attempting registration with:', { email, name });
           
-          response = await axios.post(`${API_URL}/register`, {
+          response = await axios.post(`${API_URL}/auth/register`, {
             name,
             email,
             password
@@ -96,7 +96,7 @@ const Login = () => {
             passwordExists: !!loginData.password
           });
           
-          response = await axios.post(`${API_URL}/login`, loginData, {
+          response = await axios.post(`${API_URL}/auth/login`, loginData, {
             headers: {
               'Content-Type': 'application/json',
               'Accept': 'application/json'

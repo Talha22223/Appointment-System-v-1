@@ -210,7 +210,7 @@ const MyAppointments = ({ adminMode = false }) => {
         navigate('/login');
         return;
       }
-      await axios.put(`${API_URL}/appointments/${appointmentId}/status`, { status: 'confirmed' }, {
+      await axios.patch(`${API_URL}/appointments/${appointmentId}/status`, { status: 'confirmed' }, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
@@ -242,7 +242,7 @@ const MyAppointments = ({ adminMode = false }) => {
         navigate('/login');
         return;
       }
-      await axios.put(`${API_URL}/appointments/${appointmentId}/status`, { status: 'rejected' }, {
+      await axios.patch(`${API_URL}/appointments/${appointmentId}/status`, { status: 'rejected' }, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',

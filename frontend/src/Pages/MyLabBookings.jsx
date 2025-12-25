@@ -11,6 +11,8 @@ const MyLabBookings = ({ adminMode = false }) => {
     const [error, setError] = useState('');
     const navigate = useNavigate();
     
+    const API_URL = import.meta.env.VITE_API_URL || 'https://appointment-backend-fwy2.onrender.com/api';
+    
     // Use a default image fallback
     const defaultLabImage = assets.profile_pic;
     
@@ -35,11 +37,11 @@ const MyLabBookings = ({ adminMode = false }) => {
             
             console.log('MyLabBookings - isAdmin:', isAdmin, 'adminMode:', adminMode);
             
-            let endpoint = 'https://appointment-backend-fwy2.onrender.com/api/lab-bookings/patient';
+            let endpoint = `${API_URL}/lab-bookings/patient`;
             
             // Only use admin endpoint if explicitly in admin mode, not just if user is admin
             if (adminMode) {
-                endpoint = 'https://appointment-backend-fwy2.onrender.com/api/lab-bookings/all';
+                endpoint = `${API_URL}/lab-bookings/all`;
                 console.log('Using admin endpoint for lab bookings');
             } else {
                 console.log('Using patient endpoint for lab bookings');
@@ -117,7 +119,7 @@ const MyLabBookings = ({ adminMode = false }) => {
                 return;
             }
             
-            await axios.put(`https://appointment-backend-fwy2.onrender.com/api/lab-bookings/${bookingId}/cancel`, {}, {
+            await axios.put(`${API_URL}/lab-bookings/${bookingId}/cancel`, {}, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -140,7 +142,7 @@ const MyLabBookings = ({ adminMode = false }) => {
                 return;
             }
             
-            await axios.put(`https://appointment-backend-fwy2.onrender.com/api/lab-bookings/${bookingId}/status`, 
+            await axios.put(`${API_URL}/lab-bookings/${bookingId}/status`, 
                 { status: 'confirmed' }, {
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -168,7 +170,7 @@ const MyLabBookings = ({ adminMode = false }) => {
                 return;
             }
             
-            await axios.put(`https://appointment-backend-fwy2.onrender.com/api/lab-bookings/${bookingId}/status`, 
+            await axios.put(`${API_URL}/lab-bookings/${bookingId}/status`, 
                 { status: 'rejected' }, {
                 headers: {
                     Authorization: `Bearer ${token}`

@@ -231,7 +231,7 @@ const Myprofile = ({ initialTab = 'profile' }) => {
             if (!token) return;
             
             // Using the correct backend endpoint
-            await axios.put(`${API_URL}/appointments/${appointmentId}/status`, 
+            await axios.patch(`${API_URL}/appointments/${appointmentId}/status`, 
                 { status: newStatus },
                 { headers: { Authorization: `Bearer ${token}` }}
             );

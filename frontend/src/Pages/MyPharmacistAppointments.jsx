@@ -98,7 +98,7 @@ const MyPharmacistAppointments = () => {
         navigate('/login');
         return;
       }
-      await axios.patch(
+      await axios.put(
         `${API_URL}/pharmacist-appointments/${appointmentId}/cancel`,
         {},
         {
