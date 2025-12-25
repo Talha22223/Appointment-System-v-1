@@ -6,6 +6,7 @@ import axios from 'axios';
 
 import { assets } from '../assets/assets_frontend/assets';
 import ReleatedDoctors from '../Components/ReleatedDoctors';
+const API_URL = import.meta.env.VITE_API_URL || import.meta.env.NEXT_PUBLIC_API_BASE_URL || 'http://127.0.0.1:3001/api';
 
 const Appointment = () => {
     // Fix: Use the correct parameter name from URL
@@ -205,7 +206,7 @@ const Appointment = () => {
             
             // Make API request to book appointment
             const response = await axios.post(
-              'http://127.0.0.1:3001/api/appointments',
+              `${API_URL}/appointments`,
               {
                 doctorId: docInfo._id,
                 doctorData: doctorData, // Send the full doctor data object

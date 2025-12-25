@@ -26,8 +26,9 @@ const Login = () => {
     }, []);
     
     // Base URL for your API - adjust this to match your backend
-    const API_URL = 'http://127.0.0.1:3001/api/auth'; // Change this to your actual backend URL
-    
+     // Change this to your actual backend URL
+    const API_URL = import.meta.env.VITE_API_URL || import.meta.env.NEXT_PUBLIC_API_BASE_URL || 'http://127.0.0.1:3001/api';
+
     const onSubmitHandler = async (event) => {
       event.preventDefault();
       

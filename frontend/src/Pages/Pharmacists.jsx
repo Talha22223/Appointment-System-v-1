@@ -13,7 +13,8 @@ const Pharmacists = () => {
     const [error, setError] = useState('');
     const navigate = useNavigate();
     
-    const API_URL = 'http://127.0.0.1:3001/api';
+        const API_URL = import.meta.env.VITE_API_URL || import.meta.env.NEXT_PUBLIC_API_BASE_URL || 'http://127.0.0.1:3001/api';
+
     
     const specialities = [
         'All', 

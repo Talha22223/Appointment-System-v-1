@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { assets } from '../assets/assets_frontend/assets';
 import { AuthContext } from '../Context/AuthContext.jsx';
-
+const API_URL = import.meta.env.VITE_API_URL || import.meta.env.NEXT_PUBLIC_API_BASE_URL || 'http://127.0.0.1:3001/api';
 const MyAppointments = ({ adminMode = false }) => {
   const { currentUser, isAdmin } = useContext(AuthContext);
   const [appointments, setAppointments] = useState([]);
@@ -26,7 +26,7 @@ const MyAppointments = ({ adminMode = false }) => {
       const token = localStorage.getItem('token');
       if (!token) return;
       
-      const response = await axios.get('http://127.0.0.1:3001/api/doctors', {
+      const response = await axios.get(`${API_URL}/doctors`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -77,11 +77,11 @@ const MyAppointments = ({ adminMode = false }) => {
       
       console.log('MyAppointments - isAdmin:', isAdmin, 'adminMode:', adminMode);
       
-      let endpoint = 'http://127.0.0.1:3001/api/appointments/patient';
+      let endpoint = `${API_URL}/appointments/patient`;
       
       // Only use admin endpoint if explicitly in admin mode, not just if user is admin
       if (adminMode) {
-        endpoint = 'http://127.0.0.1:3001/api/appointments/all';
+        endpoint = `${API_URL}/appointments/all`;
         console.log('Using admin endpoint for appointments');
       } else {
         console.log('Using patient endpoint for appointments');
@@ -185,7 +185,7 @@ const MyAppointments = ({ adminMode = false }) => {
         return;
       }
       
-      await axios.put(`http://127.0.0.1:3001/api/appointments/${appointmentId}/cancel`, {}, {
+      await axios.put(`${API_URL}/appointments/${appointmentId}/cancel`, {}, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -208,7 +208,7 @@ const MyAppointments = ({ adminMode = false }) => {
         return;
       }
       
-      await axios.put(`http://127.0.0.1:3001/api/appointments/${appointmentId}/status`, 
+      await axios.put(`${API_URL}/appointments/${appointmentId}/status`, 
         { status: 'confirmed' }, {
         headers: {
           Authorization: `Bearer ${token}`
@@ -236,7 +236,7 @@ const MyAppointments = ({ adminMode = false }) => {
         return;
       }
       
-      await axios.put(`http://127.0.0.1:3001/api/appointments/${appointmentId}/status`, 
+      await axios.put(`${API_URL}/appointments/${appointmentId}/status`, 
         { status: 'rejected' }, {
         headers: {
           Authorization: `Bearer ${token}`
